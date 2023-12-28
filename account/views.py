@@ -12,7 +12,7 @@ from rest_framework.decorators import (
     parser_classes,
     )
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import JSONParser
 from .serializers import UserSerializer
@@ -34,17 +34,12 @@ def register(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def tst(request):
-    print(request.headers)
-    return Response(f"Hi {request.user}")
-
-@api_view(['GET'])
 @permission_classes([AllowAny])
 def success(request):
     try:
         session = PaymentSession.objects.get(session_id= request.query_params['session_id'])
     except PaymentSession.DoesNotExist:
-        return Response()
+        return Response()@throttle_classes()
     return Response({'msg': f"Hi {session.user} - Your subscription is active now."})
 
 @api_view(['GET'])
@@ -53,6 +48,7 @@ def cancel(request):
     return Response({'msg': f"Subscription payment failed."})
 
 @api_view(['GET'])
+@throttle_classes([UserRateThrottle])
 def pay_subscription(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     if not request.user.stripe_customer_id:

@@ -39,6 +39,7 @@ def single_prompt(request):
     return Response(response)
 
 @api_view(['GET'])
+@throttle_classes([UserRateThrottle])
 def chat_history(request):
     if not request.user.is_subscribed():
         return Response({"message": "Only subscribed users can access this endpoint"}, status=status.HTTP_403_FORBIDDEN)

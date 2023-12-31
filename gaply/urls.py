@@ -23,16 +23,17 @@ from rest_framework_simplejwt.views import (
 from account.views import register, pay_subscription, success, cancel, stripe_webhook
 from gpt.views import single_prompt, chat_history
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/v1/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/v1/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/v1/auth/register/', register, name="register"),
-    path('api/v1/success/', success, name='payment_success'),
-    path('api/v1/cancel/', cancel, name='payment_failed'),
-    path('api/v1/webhook/', stripe_webhook, name='webhook'),
-    path('api/v1/chat/', single_prompt, name='prompt'),
-    path('api/v1/subscribe/',pay_subscription, name='subscribe'),
-    path('api/v1/chat/history/', chat_history, name="chat_history"),
+GLOBAL_PREFIX='gaply_challenge/'
 
+urlpatterns = [
+    path(GLOBAL_PREFIX+'admin/', admin.site.urls),
+    path(GLOBAL_PREFIX+'api/v1/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path(GLOBAL_PREFIX+'api/v1/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path(GLOBAL_PREFIX+'api/v1/auth/register/', register, name="register"),
+    path(GLOBAL_PREFIX+'api/v1/success/', success, name='payment_success'),
+    path(GLOBAL_PREFIX+'api/v1/cancel/', cancel, name='payment_failed'),
+    path(GLOBAL_PREFIX+'api/v1/webhook/', stripe_webhook, name='webhook'),
+    path(GLOBAL_PREFIX+'api/v1/chat/', single_prompt, name='prompt'),
+    path(GLOBAL_PREFIX+'api/v1/subscribe/',pay_subscription, name='subscribe'),
+    path(GLOBAL_PREFIX+'api/v1/chat/history/', chat_history, name="chat_history"),
 ]

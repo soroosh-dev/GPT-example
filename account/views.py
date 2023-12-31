@@ -50,6 +50,8 @@ def cancel(request):
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle])
 def pay_subscription(request):
+    if request.user.is_subscribed():
+        return Response({"message": "You already have an active subscription."}, status=status.HTTP_403_FORBIDDEN)
     stripe.api_key = settings.STRIPE_SECRET_KEY
     if not request.user.stripe_customer_id:
         customer_created = create_stripe_customer(request.user)
